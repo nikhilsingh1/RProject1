@@ -102,7 +102,7 @@ IncomFrigAvg.data <- data.frame(income = incomeconvert, average.numfrig = Avgs)
 
 bargraph <- ggplot(data=IncomFrigAvg.data) + geom_col(mapping=aes(x=income, y=average.numfrig), fill = "green") + theme(axis.text.x = element_text(angle = 70, hjust = 1))
 
-bargraph.labels <- bargraph + labs(title = " Average Number of Refrigerators in a Household, Related to Household Income", x = "Income", y = "Average Number of Refrigerators") + scale_x_discrete(limits=c(incomeconvert))
+bargraph.labels <- bargraph + labs(title = "                  Average Number of Refrigerators in a Household,\n                                 Related to Household Income", x = "Income", y = "Average Number of Refrigerators") + scale_x_discrete(limits=c(incomeconvert))
 
 bargraph.labels
 
@@ -133,12 +133,13 @@ bargraph.labels
 # friguseincome.graphlabels
 
 #using my own file
+friguse.income = c("Less than $20,000",	"$20,000 to $39,999",	"$40,000 to $59,999",	"$60,000 to $79,999",	"$80,000 to $99,000",	"$100,000 to $119,999",	"$120,000 to  $139,999",	"$140,000 or more")
 income.use = read.csv("Refrig vs Non (Income).csv", header=TRUE)
 income.use <- income.use[complete.cases(income.use),]
 income.usegraph <- ggplot(income.use) +  geom_col(mapping=aes(x=Income, y=Use.a.refrigerator), fill = "blue") + theme(axis.text.x = element_text(angle = 70, hjust = 1))+ scale_x_discrete(limits=c(friguse.income))
  
 
-income.usegraph.labels <- income.usegraph + labs(title = "       Households that Do Use a Refrigerator, Related to Household Income", x = "Income", y = "Number of Households that Use\na Refrigerator (in millions)")
+income.usegraph.labels <- income.usegraph + labs(title = "             Number of Households that Do Use a Refrigerator,\n                              Related to Household Income", x = "Income", y = "Number of Households that Use\na Refrigerator (in millions)")
 
 income.usegraph.labels
 
