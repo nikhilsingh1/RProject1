@@ -15,26 +15,17 @@ knitr::opts_chunk$set(echo = FALSE)
 We are the Chill Marketing Team and we work to market refrigerators to the people of the United States. Our goal is to use data to optimize our marketing efforts. Data is an important resource that can provide us with valuable information to help our team. The US Energy Information Administration (EIA) website has data from 2015 regarding appliances. Logically, we focused in on the data that had to do with refrigerators. One of our jobs is to market refrigerators to various income demographics. Because of this, we decided to track refrigerator trends related to household income, especially since the EIA provides sufficient data on various refrigerator topics related to income. Firstly, we wanted to look at the average number of refrigerators a household has related to the household income in hopes to see a trend to tell us what incomes tend to have more refrigerators. Then, we found information on the EIA website that looked at household refrigerator use in general for certain incomes. Based on the results of that data, we decided to look at how different refrigerator characteristics related to income to see what trends we could find to help us perhaps market certain refrigerators to certain income brackets. We looked at size, age, and type of refrigerators that people with certain incomes used in 2015 to help guide us formulate our new marketing strategies.
 
 
-
-
-# Jackie
+# Analysis
 ```{r}
-
+# Jackie
 
 # Save recs2015_public_v1 from eia website as csv
 
-
-#Incomes.1 = filter(incomfrig.data, Incomes==1)
-
-#meanIncomes.1 = mean(Incomes.1$NumFrig)
-#meanIncomes.1 
-library(tidyverse)
-library(ggplot2)
-#library(dplyr)
+pacman::p_load("ggplot2", "tidyverse", "dplyr", "data.table")
 
 # start of project code 
 income.use = read.csv("Refrig vs Non (Income).csv", header=TRUE)
-recs2015 = read.csv("recs2015_public_v1.csv", header=TRUE)
+recs2015 = read.csv("https://www.eia.gov/consumption/residential/data/2015/csv/recs2015_public_v1.csv")
 Incomes = recs2015$MONEYPY
 NumFrig = recs2015$NUMFRIG
 ```
@@ -73,9 +64,6 @@ meanNumFrig.7 = mean(Incomes.6$NumFrig)
 Incomes.8 = filter(incomfrig.data, Incomes==8)
 meanNumFrig.8 = mean(Incomes.8$NumFrig)
 
-# bar plot #can use a legend to show which 1-8 corresponds to which income
-# make data frame of average number of refrigerators and income
-
 
 Avgs <- c(meanNumFrig.1, meanNumFrig.2, meanNumFrig.3, meanNumFrig.4, meanNumFrig.5, meanNumFrig.6, meanNumFrig.7, meanNumFrig.8)
 
@@ -90,18 +78,14 @@ bargraph.labels <- bargraph + labs(title = "              Average Number of Refr
 
 bargraph.labels
 
-
-
-
-
-
-
 ```
+After looking at the average number of refrigerators per household in relation to the household's income, there does appear to be a slight increase in the number of refrigerators in the households as the income increases; a seemigly logical result since those with more money have the financial capability to buy more refrigerators. However, the differences are not as big as our team thought. The average number of refrigerators in different income households ranges from 1.1 to 1.9. Although the difference in the number of refrigerators in a household based on income is smaller than we expected, we can still utilize this information because those in higher income brackets are still buying relatively more refrigerators, which is relevant to our sales. Perhaps since households with higher incomes tend to have more refrigerators, one of the refrigerators could be quite old and in need of replacement, which is where we come in to make that sale ro replace it.
+
 
 
 ```{r}
 
-# now going to look at the relationship between household income and whether or not the household has a refrigerator?
+# now going to look at the relationship between household income and whether or not the household has a refrigerator
 
 #using my own file
 friguse.income = c("Less than $20,000",	"$20,000 to $39,999",	"$40,000 to $59,999",	"$60,000 to $79,999",	"$80,000 to $99,000",	"$100,000 to $119,999",	"$120,000 to  $139,999",	"$140,000 or more")
@@ -117,6 +101,5 @@ income.usegraph.labels
 
 ```
 
-
-After looking at the average number of refrigerators per household in relation to the household's income, there does appear to be a slight increase in the number of refrigerators in the households as the income increases; a seemigly logical result since those with more money have the financial capability to buy more refrigerators. However, the differences are not as big as our team thought. The average number of refrigerators in different income households ranges from 1.1 to 1.9. Although the difference in the number of refrigerators in a household based on income is smaller than we expected, we can still utilize this information because those in higher income brackets are still buying relatively more refrigerators, which is relevant to our sales. Perhaps since households with higher incomes tend to have more refrigerators, one of the refrigerators could be quite old and in need of replacement, which is where we come in to make that sale ro replace it. Our second plot looks at the number of households that have refrigerators in relation to different household income brackets. The graph exhibits the trend that the higher the income bracket, the less likely the household is to use a refrigerators (with the exception of the jump in the "$140,000 or more"" bracket). This information is important to us in the sense that there may be potential high income households that do not use a refrigator, and are therefore a valuable, untapped resource of refrigerators buyers. Strengthening our marketing techniques to these potential buyers could benefit our company's sales greatly, especially if we are able to market more high-tech, expensive refrigerators to high income groups. Now, we will look at other characteristics of refrigerators that may vary more significantly with income, such as the age of the refrigerator. By doing so, we can try to determine what kinds of refrigerators to market to what income demographics, in order to enhance the efficiency of our marketing efforts. 
+Our second plot looks at the number of households that have refrigerators in relation to different household income brackets. The graph exhibits the trend that the higher the income bracket, the less likely the household is to use a refrigerators (with the exception of the jump in the "$140,000 or more"" bracket). This information is important to us in the sense that there may be potential high income households that do not use a refrigator, and are therefore a valuable, untapped resource of refrigerators buyers. Strengthening our marketing techniques to these potential buyers could benefit our company's sales greatly, especially if we are able to market more high-tech, expensive refrigerators to high income groups. Now, we will look at other characteristics of refrigerators that may vary more significantly with income, such as the age of the refrigerator. By doing so, we can try to determine what kinds of refrigerators to market to what income demographics, in order to enhance the efficiency of our marketing efforts. 
 
