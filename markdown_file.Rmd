@@ -11,13 +11,16 @@ knitr::opts_chunk$set(echo = FALSE)
 
 
 
-
+# Intro
+We are the Chill Marketing Team and we work to market refrigerators to the people of the United States. Our goal is to use data to optimize our marketing efforts. Data is an important resource that can provide us with valuable information to help our team. The US Energy Information Administration (EIA) website has data from 2015 regarding appliances. Logically, we focused in on the data that had to do with refrigerators. One of our jobs is to market refrigerators to various income demographics. Because of this, we decided to track refrigerator trends related to household income, especially since the EIA provides sufficient data on various refrigerator topics related to income. Firstly, we wanted to look at the average number of refrigerators a household has related to the household income in hopes to see a trend to tell us what incomes tend to have more refrigerators. Then, we found information on the EIA website that looked at household refrigerator use in general for certain incomes. Based on the results of that data, we decided to look at how different refrigerator characteristics related to income to see what trends we could find to help us perhaps market certain refrigerators to certain income brackets. We looked at size, age, and type of refrigerators that people with certain incomes used in 2015 to help guide us formulate our new marketing strategies.
 
 
 
 
 # Jackie
 ```{r}
+
+
 # Save recs2015_public_v1 from eia website as csv
 
 
@@ -83,7 +86,7 @@ IncomFrigAvg.data <- data.frame(income = incomeconvert, average.numfrig = Avgs)
 
 bargraph <- ggplot(data=IncomFrigAvg.data) + geom_col(mapping=aes(x=income, y=average.numfrig), fill = "green") + theme(axis.text.x = element_text(angle = 70, hjust = 1))
 
-bargraph.labels <- bargraph + labs(title = "                  Average Number of Refrigerators in a Household,\n                                 Related to Household Income", x = "Income", y = "Average Number of Refrigerators") + scale_x_discrete(limits=c(incomeconvert))
+bargraph.labels <- bargraph + labs(title = "              Average Number of Refrigerators in a Household,\n                             Related to Household Income", x = "Income", y = "Average Number of Refrigerators") + scale_x_discrete(limits=c(incomeconvert))
 
 bargraph.labels
 
@@ -99,8 +102,6 @@ bargraph.labels
 ```{r}
 
 # now going to look at the relationship between household income and whether or not the household has a refrigerator?
-
-
 
 #using my own file
 friguse.income = c("Less than $20,000",	"$20,000 to $39,999",	"$40,000 to $59,999",	"$60,000 to $79,999",	"$80,000 to $99,000",	"$100,000 to $119,999",	"$120,000 to  $139,999",	"$140,000 or more")
