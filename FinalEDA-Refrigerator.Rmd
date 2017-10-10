@@ -1,0 +1,533 @@
+---
+title: "Project 1"
+author: "Xiang Zhao, Nikhil Singh, Jackie Horn, Weige Guo"
+date: "October 10, 2017"
+output: pdf_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+pacman::p_load("ggplot2","dplyr","knitr","data.table","foreign","car")
+```
+
+```{r}
+rawdata <- read.csv("https://www.eia.gov/consumption/residential/data/2015/csv/recs2015_public_v1.csv")
+```
+
+# Introduction
+We are the Chill Marketing Research Company and we focus on providing data-driven marketing strategies to our clients. This year, General Electric entrusted us to do a comprehensive marketing plan for the launch of a new refrigerator targeting mainly at high income households. 
+
+We started from asking ourselves where the market is lying, if there is a gap in the market that we can fill in, and if there are key attributes we should focus on. Luckily, the US Energy Information Administration (EIA) website has data from 2015 regarding appliances that could help us exploring these questions. Logically, we focused on the data that had to do with refrigerators. We decided to track refrigerator trends related to household income to see if any major differences lie in the of refrigerators in households with different income levels. Firstly, we wanted to look at the average number of refrigerators a household has, related to the household income in hopes to see a trend to tell us what incomes tend to have more refrigerators. Then, we looked at how different refrigerator characteristics, including size, age, and type, are related to income to see what we could find to help us market and position the new product. 
+
+This report shows the first step of our work, which contains the manipulation of the data, the analysis accordingly, and a conclusion. We are waiting for the response from General Electronic and once we get it, we will incorporate the review into the next step of our marketing strategies. 
+
+
+
+# Analysis
+```{r}
+
+# Jackie Horn
+
+# start of project code 
+income.use = read.csv("https://raw.githubusercontent.com/nikhilsingh1/RProject1/master/Refrig%20vs%20Non%20(Income).csv", header=TRUE)
+income.use <- na.omit(income.use)
+Incomes = rawdata$MONEYPY
+NumFrig = rawdata$NUMFRIG
+```
+
+```{r}
+#Jackie Horn
+# make columns of just Incomes and NumFrig then filter the different incomes
+# then find the average number of refrigerators each income group has
+incomfrig.data = cbind(Incomes,NumFrig)    
+incomfrig.data = as.data.frame(incomfrig.data)
+Incomes.1 = filter(incomfrig.data, Incomes==1)
+meanNumFrig.1 = mean(Incomes.1$NumFrig)          # mean number of friges for income 1 category
+
+
+Incomes.2 = filter(incomfrig.data, Incomes==2)
+meanNumFrig.2 = mean(Incomes.2$NumFrig)
+
+
+Incomes.3 = filter(incomfrig.data, Incomes==3)
+meanNumFrig.3 = mean(Incomes.3$NumFrig)
+
+
+Incomes.4 = filter(incomfrig.data, Incomes==4)
+meanNumFrig.4 = mean(Incomes.4$NumFrig)
+
+Incomes.5 = filter(incomfrig.data, Incomes==5)
+meanNumFrig.5 = mean(Incomes.5$NumFrig)
+
+
+Incomes.6 = filter(incomfrig.data, Incomes==6)
+meanNumFrig.6 = mean(Incomes.6$NumFrig)
+
+
+Incomes.7 = filter(incomfrig.data, Incomes==7)
+meanNumFrig.7 = mean(Incomes.6$NumFrig)
+
+Incomes.8 = filter(incomfrig.data, Incomes==8)
+meanNumFrig.8 = mean(Incomes.8$NumFrig)
+
+
+Avgs <- c(meanNumFrig.1, meanNumFrig.2, meanNumFrig.3, meanNumFrig.4, meanNumFrig.5, meanNumFrig.6, meanNumFrig.7, meanNumFrig.8)
+
+
+incomeconvert = c("Less than $20,000", "$20,000 - $39,999","$40,000 - $59,999", "$60,000 to $79,999", "$80,000 to $99,999", "$100,000 to $119,999", "$120,000 to $139,999", "$140,000 or more")
+
+IncomFrigAvg.data <- data.frame(income = incomeconvert, average.numfrig = Avgs)
+
+bargraph <- ggplot(data=IncomFrigAvg.data) + geom_col(mapping=aes(x=income, y=average.numfrig), fill = "#FFFF66") + theme(axis.text.x = element_text(angle = 70, hjust = 1))
+
+bargraph.labels <- bargraph + labs(title = "              Average Number of Refrigerators in a Household,\n                             Related to Household Income", x = "Income", y = "Average Number of Refrigerators") + scale_x_discrete(limits=c(incomeconvert))
+
+bargraph.labels <- bargraph.labels + labs(caption="Source: The U.S. Energy Information Administration")
+bargraph.labels
+```
+
+##Analysis:
+
+After looking at the average number of refrigerators per household in relation to the household's income, there does appear to be a slight increase in the number of refrigerators in the households as the income increases; a seemingly logical result since those with more money have the financial capability to buy more refrigerators. However, the differences are not as big as our team thought they might be. The average number of refrigerators in different income households ranges from 1.1 to 1.9. Although the difference in the number of refrigerators in a household based on income is smaller than we expected, we can still utilize this information because those in higher income brackets are still buying relatively more refrigerators, which is relevant to our sales. Perhaps since households with higher incomes tend to have more refrigerators, one of the refrigerators could be quite old and in need of replacement, which is where we come in to make that sale to replace it.
+
+
+
+```{r}
+#Jackie Horn
+# now going to look at the relationship between household income and whether or not the household has a refrigerator
+
+#using my own file
+friguse.income = c("Less than $20,000",	"$20,000 to $39,999",	"$40,000 to $59,999",	"$60,000 to $79,999",	"$80,000 to $99,000",	"$100,000 to $119,999",	"$120,000 to  $139,999",	"$140,000 or more")
+income.use <- income.use[complete.cases(income.use),]
+income.usegraph <- ggplot(income.use) +  geom_col(mapping=aes(x=Income, y=Use.a.refrigerator), fill = "#FFCCCC") + theme(axis.text.x = element_text(angle = 70, hjust = 1))+ scale_x_discrete(limits=c(friguse.income))
+ 
+
+income.usegraph.labels <- income.usegraph + labs(title = "             Number of Households that Do Use a Refrigerator,\n                              Related to Household Income", x = "Income", y = "Number of Households that Use\na Refrigerator (in millions)")
+
+income.usegraph.labels <- income.usegraph.labels
+
+income.usegraph.labels <- income.usegraph.labels + labs(caption="Source: The U.S. Energy Information Administration")
+income.usegraph.labels
+```
+
+##Analysis:
+
+We wanted to look to see if general usage of refrigerators related to income showed a bigger difference than the first plot. Our second plot above looks at the number of households that have refrigerators in relation to different household income brackets. The graph exhibits the trend that the higher the income bracket, the less likely the household is to use a refrigerator (with the exception of the jump in the "$140,000 or more" bracket). This information is important to us in the sense that there may be potential high income households that do not use a refrigator, and are therefore a valuable, untapped resource of refrigerator buyers. Observing both plots, we can see that although those with higher incomes are less likely to use a refrigerator in general, those that do use a refrigerator on average use more within the household. Strengthening our marketing techniques to these higher income potential buyers could benefit our company's sales greatly, especially if we are able to market more high-tech, expensive refrigerators to high income groups. Now, we will look at other characteristics of refrigerators that may vary more significantly with income. By doing so, we can try to determine what kinds of refrigerators to market to what income demographics, in order to enhance the efficiency of our marketing efforts. 
+
+
+#Age
+```{r}
+#Xiang Zhao
+#Choose the data of incomem and age of most-used refrigerator and rename them. 
+rfr1 <- data.frame(cbind(rawdata$MONEYPY, rawdata$AGERFRI1))
+colnames(rfr1) <- c("income", "aor")
+
+rfr2 <- data.frame(cbind(rawdata$MONEYPY, rawdata$AGERFRI2))
+colnames(rfr2) <- c("income","aosr")
+```
+
+```{r}
+#Xiang Zhao
+#Clean the NA data.
+rfr1[,2][rfr1[,2] == -2] <- NA
+rfr1 <- na.omit(rfr1)
+
+rfr2[,2][rfr2[,2] == -2] <- NA
+rfr2 <- na.omit(rfr2)
+```
+
+```{r}
+#Xiang Zhao 
+#Count the number of houseshold in different categories.
+g1 <- rfr1 %>%
+  group_by(income) %>%
+  count(aor) 
+```
+
+```{r}
+#Xiang Zhao 
+#Relevel the data.
+g1$income <- as.factor(g1$income)
+g1$aor <- as.factor(g1$aor)
+#change the level of income.
+levels(g1$income)[levels(g1$income)=="1"] <- "Less than $20,000"
+levels(g1$income)[levels(g1$income)=="2"] <- "$20,000 to $39,999"
+levels(g1$income)[levels(g1$income)=="3"] <- "$40,000 to $59,999"
+levels(g1$income)[levels(g1$income)=="4"] <- "$60,000 to $79,999"
+levels(g1$income)[levels(g1$income)=="5"] <- "$80,000 to $99,999"
+levels(g1$income)[levels(g1$income)=="6"] <- "$100,000 to $119,999"
+levels(g1$income)[levels(g1$income)=="7"] <- "$120,000 to $139,999"
+levels(g1$income)[levels(g1$income)=="8"] <- "$140,000 or more"
+#change the level of aor.
+levels(g1$aor)[levels(g1$aor)=="1"] <- "Less than 2 years old"
+levels(g1$aor)[levels(g1$aor)=="2"] <- "2 to 4 years old"
+levels(g1$aor)[levels(g1$aor)=="3"] <- "5 to 9 years old"
+levels(g1$aor)[levels(g1$aor)=="41"] <- "10 to 14 years old"
+levels(g1$aor)[levels(g1$aor)=="42"] <- "15 to 19 years old"
+levels(g1$aor)[levels(g1$aor)=="5"] <- "20 years or older"
+```
+
+```{r}
+#Xiang Zhao 
+#Plot the stacked bar plot.
+figure.1 <- ggplot() + geom_bar(aes(y = n, x = income, fill = factor(aor, levels = c("Less than 2 years old","2 to 4 years old","5 to 9 years old","10 to 14 years old","15 to 19 years old","20 years or older"))), data = g1, stat="identity")
+figure.1 <- figure.1 + labs(title="Figure1: Household income vs Age of most-used refrigerator", y="Number of households", x="Income", caption="Source: The U.S. Energy Information Administration")
+figure.1 <- figure.1 + theme(axis.text.x = element_text(angle = 25, hjust = 1))
+figure.1 <- figure.1 + theme(legend.position="bottom")
+figure.1 <- figure.1 + labs(color="Age", size="Density") 
+figure.1 <- figure.1 + guides(fill=guide_legend(title="Age of most-used refrigerator"))
+figure.1 <- figure.1 + scale_fill_manual(values=c("#FF9999","#FFFF66","#CCFF66","#CC66FF","#99FFFF","#999999"))
+figure.1
+```
+
+##Analysis: 
+
+For the first refrigerator, the number of households using refrigerator whose annual gross income less than 80000 dollars is twice to the households whose income is higher than 80000 dollars. So we should produce more products for the households with less than 80000 dollars annual income. And also, we can see that the using age of 5-9 years is the most common period for every income level, which seems to cover 1/3 of all the households. Thus, 5-9 years should be our period to market new refrigerators for our old buyers. That's our first marketing strategy developed from figure1.
+```{r}
+#Xiang Zhao 
+#Count the number of houseshold in different categories.
+g2 <- rfr2 %>%
+  group_by(income) %>%
+  count(aosr) 
+```
+
+```{r}
+#Xiang Zhao 
+#Relevel the data.
+g2$income <- as.factor(g2$income)
+g2$aosr <- as.factor(g2$aosr)
+#change the level of income.
+levels(g2$income)[levels(g2$income)=="1"] <- "Less than $20,000"
+levels(g2$income)[levels(g2$income)=="2"] <- "$20,000 to $39,999"
+levels(g2$income)[levels(g2$income)=="3"] <- "$40,000 to $59,999"
+levels(g2$income)[levels(g2$income)=="4"] <- "$60,000 to $79,999"
+levels(g2$income)[levels(g2$income)=="5"] <- "$80,000 to $99,999"
+levels(g2$income)[levels(g2$income)=="6"] <- "$100,000 to $119,999"
+levels(g2$income)[levels(g2$income)=="7"] <- "$120,000 to $139,999"
+levels(g2$income)[levels(g2$income)=="8"] <- "$140,000 or more"
+#change the level of aor.
+levels(g2$aosr)[levels(g2$aosr)=="1"] <- "Less than 2 years old"
+levels(g2$aosr)[levels(g2$aosr)=="2"] <- "2 to 4 years old"
+levels(g2$aosr)[levels(g2$aosr)=="3"] <- "5 to 9 years old"
+levels(g2$aosr)[levels(g2$aosr)=="41"] <- "10 to 14 years old"
+levels(g2$aosr)[levels(g2$aosr)=="42"] <- "15 to 19 years old"
+levels(g2$aosr)[levels(g2$aosr)=="5"] <- "20 years or older"
+```
+
+```{r}
+#Xiang Zhao 
+#Plot the stacked bar plot.
+figure.2 <- ggplot() + geom_bar(aes(y = n, x = income, fill = factor(aosr, levels = c("Less than 2 years old","2 to 4 years old","5 to 9 years old","10 to 14 years old","15 to 19 years old","20 years or older"))), data = g2, stat="identity")
+figure.2 <- figure.2 + labs(title="Figure2: Household income vs Age of second most-used refrigerator", y="Number of households", x="Income", caption="Source: The U.S. Energy Information Administration")
+figure.2 <- figure.2 + theme(axis.text.x = element_text(angle = 25, hjust = 1))
+figure.2 <- figure.2 + theme(legend.position="bottom")
+figure.2 <- figure.2 + labs(color="Age", size="Density") 
+figure.2 <- figure.2 + guides(fill=guide_legend(title="Age of second most-used refrigerator"))
+figure.2 <- figure.2 + scale_fill_manual(values=c("#FF9999","#FFFF66","#CCFF66","#CC66FF","#99FFFF","#999999"))
+figure.2
+```
+
+##Analysis:
+
+For the second refrigerator, the total number of households using second refrigerator decreases and is relatively uniform among different levels of income. So we should focus uniformly both on households with lower and higher income. And also, we can see that the  proportion of second refrigerator using age of 5-9 years has decreased and the proportion of second refrigerator using age of 10-14 years has increased. From this change, we may probably conclude that the households who buy a second refrigerator will last more years to change for a third refrigerator, which means they desire to purchase the refrigerator with high quality, especially on the longevity of the second refrigerator compared to the first one. So what we should do is to produce refrigerators with higher quality to match this demand. That's our second marketing strategy developed from figure2.
+
+#Size
+
+```{r}
+#Nikhill Singh
+fr1 <- data.frame(cbind(rawdata$MONEYPY, rawdata$SIZRFRI1))
+colnames(fr1) <- c("income", "sor") #sor is size of refrigerator
+
+fr2 <- data.frame(cbind(rawdata$MONEYPY, rawdata$SIZRFRI2))
+colnames(fr2) <- c("income","sosr") #sosr is size of second refrigerator
+```
+
+```{r}
+#Nikhill Singh
+fr1[,2][fr1[,2] == -2] <- NA
+fr1 <- na.omit(fr1)
+
+fr2[,2][fr2[,2] == -2] <- NA
+fr2 <- na.omit(fr2)
+```
+
+```{r}
+#Nikhill Singh
+gg1 <- fr1 %>%
+  group_by(income) %>%
+  count(sor)
+```
+
+```{r}
+#Nikhill Singh
+gg1$income <- as.factor(gg1$income)
+gg1$sor <- as.factor(gg1$sor)
+
+#change the level of income.
+levels(gg1$income)[levels(gg1$income)=="1"] <- "Less than $20,000"
+levels(gg1$income)[levels(gg1$income)=="2"] <- "$20,000 to $39,999"
+levels(gg1$income)[levels(gg1$income)=="3"] <- "$40,000 to $59,999"
+levels(gg1$income)[levels(gg1$income)=="4"] <- "$60,000 to $79,999"
+levels(gg1$income)[levels(gg1$income)=="5"] <- "$80,000 to $99,999"
+levels(gg1$income)[levels(gg1$income)=="6"] <- "$100,000 to $119,999"
+levels(gg1$income)[levels(gg1$income)=="7"] <- "$120,000 to $139,999"
+levels(gg1$income)[levels(gg1$income)=="8"] <- "$140,000 or more"
+
+#change the level of size.
+levels(gg1$sor)[levels(gg1$sor)=="1"] <- "Half-Size or Compact"
+levels(gg1$sor)[levels(gg1$sor)=="2"] <- "Small (17.5 cubic feet or less)"
+levels(gg1$sor)[levels(gg1$sor)=="3"] <- "Medium (17.6 to 22.5 cubic feet)"
+levels(gg1$sor)[levels(gg1$sor)=="4"] <- "Large (22.6 to 29.5 cubic feet)"
+levels(gg1$sor)[levels(gg1$sor)=="5"] <- "Very Large (Larger than 29.5 cubic feet"
+```
+
+
+```{r}
+#Nikhill Singh
+g1 <- ggplot() + geom_bar(aes(y = n, x = income, fill = factor(sor, levels = c("Half-Size or Compact", "Small (17.5 cubic feet or less)", "Medium (17.6 to 22.5 cubic feet)", "Large (22.6 to 29.5 cubic feet)", "Very Large (Larger than 29.5 cubic feet"))), data = gg1, stat="identity")
+
+g1 <- g1 + labs(title="Household income vs Size of most-used refrigerator", y="Number of households", x="Income", caption="Source: The U.S. Energy Information Administration")
+
+g1 <- g1 + theme(axis.text.x = element_text(angle = 25, hjust = 1))
+
+g1 <- g1 + theme(legend.position="right")
+
+g1 <- g1 + labs(color="Age", size="Density") 
+
+g1 <- g1 + guides(fill=guide_legend(title="Size of most-used refrigerator"))
+
+g1 <- g1 + scale_fill_manual(values=c("#FFCCCC","#FFFF66","#CCFF66","#CC66FF","#99FFFF","#999999"))
+g1
+```
+
+##Analysis:
+
+This graph shows the size of first most-used refrigerators with relation to income level in households. There are many relationships between these variables. Between the income levels of 40,000 dollars and 140,000 dollars, there is a steady decrease in small/medium refrigerators, while the number of large refrigerators mostly stay the same.  This maens that as income levels increase, larger refrigerators are still bought but smaller ones are in less demand. When analzying the 140,000 dollar or more income level, it can be seen that there is a sudden increase in all sizes. This shows that the wealthiest groups are buying lots of different sizes compared to the groups slightly less wealthy. It is also interesting to see the income levels less than 40,000 dollars have the most different size of refrigerators. It would be expected that they could only afford the small ones, but in fact they have more medium and large than small refrigerators.
+
+We should target the income levels between 80,000 and 140,000 because they can afford all sizes of refrigerators, but they are currently only buying the medium/larger ones.
+
+```{r}
+#Nikhill Singh
+gg2 <- fr2 %>%
+  group_by(income) %>%
+  count(sosr)
+```
+
+```{r}
+#Nikhill Singh
+gg2$income <- as.factor(gg2$income)
+gg2$sosr <- as.factor(gg2$sosr)
+
+#change the level of income.
+levels(gg2$income)[levels(gg2$income)=="1"] <- "Less than $20,000"
+levels(gg2$income)[levels(gg2$income)=="2"] <- "$20,000 to $39,999"
+levels(gg2$income)[levels(gg2$income)=="3"] <- "$40,000 to $59,999"
+levels(gg2$income)[levels(gg2$income)=="4"] <- "$60,000 to $79,999"
+levels(gg2$income)[levels(gg2$income)=="5"] <- "$80,000 to $99,999"
+levels(gg2$income)[levels(gg2$income)=="6"] <- "$100,000 to $119,999"
+levels(gg2$income)[levels(gg2$income)=="7"] <- "$120,000 to $139,999"
+levels(gg2$income)[levels(gg2$income)=="8"] <- "$140,000 or more"
+
+#change the level of size.
+levels(gg2$sosr)[levels(gg2$sosr)=="1"] <- "Half-Size or Compact"
+levels(gg2$sosr)[levels(gg2$sosr)=="2"] <- "Small (17.5 cubic feet or less)"
+levels(gg2$sosr)[levels(gg2$sosr)=="3"] <- "Medium (17.6 to 22.5 cubic feet)"
+levels(gg2$sosr)[levels(gg2$sosr)=="4"] <- "Large (22.6 to 29.5 cubic feet)"
+levels(gg2$sosr)[levels(gg2$sosr)=="5"] <- "Very Large (Larger than 29.5 cubic feet"
+```
+
+```{r}
+#Nikhill Singh
+g2 <- ggplot() + geom_bar(aes(y = n, x = income, fill = factor(sosr, levels = c("Half-Size or Compact", "Small (17.5 cubic feet or less)", "Medium (17.6 to 22.5 cubic feet)", "Large (22.6 to 29.5 cubic feet)", "Very Large (Larger than 29.5 cubic feet"))), data = gg2, stat="identity")
+
+g2 <- g2 + labs(title="Household income vs Size of second most-used refrigerator", y="Number of households", x="Income", caption="Source: The U.S. Energy Information Administration")
+
+g2 <- g2 + theme(axis.text.x = element_text(angle = 25, hjust = 1))
+
+g2 <- g2 + theme(legend.position="right")
+
+g2 <- g2 + labs(color="Age", size="Density") 
+
+g2 <- g2 + guides(fill=guide_legend(title="Size of second most-used refrigerator"))
+
+g2 <- g2 + scale_fill_manual(values=c("#FFCCCC","#FFFF66","#CCFF66","#CC66FF","#99FFFF","#999999"))
+
+g2
+```
+
+##Analysis:
+
+This graph shows the size of second most-used refrigerators with relation to income level in households. There are some more relationships that  can be analyzed here. The plot follows a very similar pattern between the income levels of 60,000 dollars and 140,000 dollars (there is a steady decrease in small/medium refrigerators, while the number of large refrigerators stays the same). The smaller refrigerators still are in less demand as income levels increase. The wealthiest income level (140,000 dollars or more) have the most different sizes of refrigerators, which makes sense because they have the most money and can spend on all different types of second refrigerators. The least wealthy income level (less than 20,000 dollars) own very few larger second refrigerators and this makes sense because they cannot afford a larger expensive second one.
+
+We should again target the income levels between 80,000 and 140,000 because they should have a similar dsitribution of sizes of second refrigerators to those of the wealthiest group rather than poorest. There is a lot of room for increase, so they are the perfect groups to sell to.
+
+#Type
+
+```{r}
+#Weige Guo
+rf <- cbind(rawdata$MONEYPY,rawdata$TYPERFR1)
+colnames(rf) <- c("income","typefirst")
+rf[,2][rf[,2] == -2] <- NA
+rfr1 <- data.frame(na.omit(rf))
+#rf
+```
+
+
+```{r}
+#Weige Guo
+rf2 <- cbind(rawdata$MONEYPY, rawdata$TYPERFR2)
+colnames(rf2) <- c("income", "typesec")
+rf2[,2][rf2[,2] == -2] <- NA
+rfr2 <- data.frame(na.omit(rf2))
+```
+
+
+```{r}
+#Weige Guo
+gg <- rfr1%>%
+  group_by(income) %>%
+  count(typefirst)
+```
+
+
+```{r}
+#Weige Guo
+gg$income[gg$income == "1"] <- "[$0 - $20,000)"
+gg$income[gg$income == "2"] <- "[$20,000 - $40,000)"
+gg$income[gg$income == "3"] <- "[$40,000 - $60,000)"
+gg$income[gg$income == "4"] <- "[$60,000 - $80,000)"
+gg$income[gg$income == "5"] <- "[$80,000 - $100,000)"
+gg$income[gg$income == "6"] <- "[$100,000 - $120,000)"
+gg$income[gg$income == "7"] <- "[$120,000 - $140,000)"
+gg$income[gg$income == "8"] <- "[$140,000 - $400,000)"
+gg$typefirst[gg$typefirst == "1"] <- "One Door"
+gg$typefirst[gg$typefirst == "21"] <- "Two Doors, Freezer next to the Refrigerator"
+gg$typefirst[gg$typefirst == "22"] <- "Two Doors, Freezer above to the Refrigerator"
+gg$typefirst[gg$typefirst == "23"] <- "Two Doors, Freezer below to the Refrigerator"
+gg$typefirst[gg$typefirst == "5"] <- "Three or more Doors"
+```
+
+
+
+```{r}
+#Weige Guo
+ggg <- rfr2%>%
+  group_by(income) %>%
+  count(typesec)
+```
+
+```{r}
+#Weige Guo
+ggg$income[ggg$income == "1"] <- "[$0 - $20,000)"
+ggg$income[ggg$income == "2"] <- "[$20,000 - $40,000)"
+ggg$income[ggg$income == "3"] <- "[$40,000 - $60,000)"
+ggg$income[ggg$income == "4"] <- "[$60,000 - $80,000)"
+ggg$income[ggg$income == "5"] <- "[$80,000 - $100,000)"
+ggg$income[ggg$income == "6"] <- "[$100,000 - $120,000)"
+ggg$income[ggg$income == "7"] <- "[$120,000 - $140,000)"
+ggg$income[ggg$income == "8"] <- "[$140,000 - $300,000)"
+ggg$typesec[ggg$typesec == "1"] <- "One Door"
+ggg$typesec[ggg$typesec == "21"] <- "Two Doors, Freezer next to the Refrigerator"
+ggg$typesec[ggg$typesec == "22"] <- "Two Doors, Freezer above to the Refrigerator"
+ggg$typesec[ggg$typesec == "23"] <- "Two Doors, Freezer below to the Refrigerator"
+ggg$typesec[ggg$typesec == "5"] <- "Three or more Doors"
+ggg$typesec[ggg$typesec == "-2"] <- "Not Applicable"
+```
+
+```{r}
+#Weige Guo
+gg$income <- factor(gg$income, 
+                    levels = c("[$0 - $20,000)", 
+                                "[$20,000 - $40,000)", 
+                                "[$40,000 - $60,000)",
+                                "[$60,000 - $80,000)",
+                                "[$80,000 - $100,000)",
+                                "[$100,000 - $120,000)",
+                                "[$120,000 - $140,000)",
+                                "[$140,000 - $400,000)"))
+
+gg$typefirst = factor(gg$typefirst, 
+                      levels = c("One Door",
+                                 "Two Doors, Freezer next to the Refrigerator",
+                                 "Two Doors, Freezer above to the Refrigerator",
+                                 "Two Doors, Freezer below to the Refrigerator",
+                                 "Three or more Doors"))
+
+gg2 <- ggplot() + 
+  geom_bar(aes(y=n, x= income, fill= typefirst),data = gg, stat ="identity")
+
+gg2 <- gg2 + 
+  guides(fill = guide_legend(title = "Type of most-used refrigerator"))
+
+gg2 <- gg2 + 
+  labs(title = "Type of most-used Refrigerator in the U.S.", 
+       x = "Income", 
+       y = "Number of Households")
+
+gg2 <- gg2 + theme(axis.text.x = element_text(angle = 30, hjust = 1))
+
+gg2 <- gg2 + scale_fill_manual(values=c("#FFCCCC","#FFFF66","#CCFF66","#CC66FF","#99FFFF","#999999"))
+
+gg2 <- gg2 + labs(caption="Source: The U.S. Energy Information Administration")
+
+gg2
+```
+
+##Analysis:
+
+The graph revealing the number of different types of the most used refrigerators in relation to the household's income help us with five major findings. 
+1. The percentages of the "One Door" type are lower in households with annual income more than $80,000 per year than households with lower income. 
+2. The percentages of the "Two Doors, Freezer next to the refrigerator" type are higher in households with annual income more than $80,000 per year than households with lower income. 
+3. The percentages of the "Two Doors, Freezer above to the Refrigerator" type  are lower in general in households with annual income more than $80,000 per year than households with lower income. 
+4. The percentages of the "Two Doors, Freezer below to the Refrigerator" type  are lower in general in households with annual income more than $80,000 per year than households with lower income. 
+5.  The percentages of the "Three or more Doors" type  are higher in general in households with income more than $80,000 per year than households with lower income. 
+
+
+
+```{r}
+#Weige Guo
+ggg$income = factor(ggg$income, 
+                    levels = c("[$0 - $20,000)",
+                               "[$20,000 - $40,000)",
+                               "[$40,000 - $60,000)",
+                               "[$60,000 - $80,000)",
+                               "[$80,000 - $100,000)",
+                               "[$100,000 - $120,000)",
+                               "[$120,000 - $140,000)",
+                               "[$140,000 - $300,000)"))
+
+ggg$typesec = factor(ggg$typesec, 
+                     levels = c("One Door",
+                                "Two Doors, Freezer next to the Refrigerator",
+                                "Two Doors, Freezer above to the Refrigerator",
+                                "Two Doors, Freezer below to the Refrigerator",
+                                "Three or more Doors"))
+
+ggg2 <- ggplot() + geom_bar(aes(y=n, x=income, fill = typesec), 
+                            data = ggg, stat = "identity")
+
+ggg2 <- ggg2 + 
+  guides(fill = guide_legend(title = "Type of second most-used refrigerator"))
+
+ggg2 <- ggg2 + labs(title = "Type of second most-used Refrigerator in the U.S.", 
+                    x = "Income", 
+                    y = "Number of Households")
+
+ggg2 <- ggg2 + theme(axis.text.x = element_text(angle = 30, hjust = 1))
+
+ggg2 <- ggg2 + scale_fill_manual(values=c("#FFCCCC","#FFFF66","#CCFF66","#CC66FF","#99FFFF","#999999"))
+
+ggg2 <- ggg2 + labs(caption="Source: The U.S. Energy Information Administration")
+
+ggg2
+```
+
+##Analysis:
+
+The graph revealing the number of different types of the seond most-used refrigerators in relation to the household's income help us with five major findings. 
+1. Households with the highest income are more likely to obtain a second refrigerator.
+2. There are no obvious similarities regarding the percentages of different types among higer and lower income households respectively. which suggests that the second refrigerators may serve as a subsidiary one and the type of it is not the first attribute for people to consider. 
+
+
+# Conclusion:
+
+Based on the manipulation of of the data collected from EIA website, here are some insights that General Electric should bear in mind along the process of  developing and marketing this new product. Although wealthier households obtain more refrigerators, they are less likely to use them, so a refrigerator that most suits their needs may have a broad market. The wealthy people still using old refrigerators are our first tier target market because usually they are health concerned, and an old refrigerator might not guarantee the freshness and nutrition of food. In terms of size and type, based on our visualization of the data, which represents people's preferences on these attributes, the new product should be a large refrigerator with either two door or more doors, and the freezer should be either next to or below to the refrigerator itself.
